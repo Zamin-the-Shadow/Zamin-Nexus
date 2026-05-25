@@ -51,6 +51,7 @@ async function initDb() {
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
       port: process.env.DB_PORT || 3306,
+      ssl: process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud') ? { rejectUnauthorized: false } : undefined
     });
 
     await initialConnection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'nexus_platform'}\`;`);
@@ -63,6 +64,7 @@ async function initDb() {
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'nexus_platform',
       port: process.env.DB_PORT || 3306,
+      ssl: process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud') ? { rejectUnauthorized: false } : undefined,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0
