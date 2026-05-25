@@ -45,26 +45,16 @@ let pool;
 
 async function initDb() {
   try {
-    // Connect without database first to create it if it doesn't exist
-    const initialConnection = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '',
-      port: process.env.DB_PORT || 3306,
-      ssl: process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud') ? { rejectUnauthorized: false } : undefined
-    });
+    const isAiven = process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud');
 
-    await initialConnection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'nexus_platform'}\`;`);
-    await initialConnection.end();
-
-    // Now create a pool using the newly created database
+    // Create a single reusable connection pool directly
     pool = mysql.createPool({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
-      database: process.env.DB_NAME || 'nexus_platform',
-      port: process.env.DB_PORT || 3306,
-      ssl: process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud') ? { rejectUnauthorized: false } : undefined,
+      database: process.env.DB_NAME || (isAiven ? 'defaultdb' : 'nexus_platform'),
+      port: parseInt(process.env.DB_PORT, 10) || 3306,
+      ssl: isAiven ? { rejectUnauthorized: false } : undefined,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0
@@ -72,12 +62,11 @@ async function initDb() {
 
     console.log('✅ Connected to MySQL database successfully!');
     
-    // Create necessary tables and seed data
+    // Run tables creation and seed checklist verification
     await createTablesAndSeed();
 
   } catch (error) {
     console.error('❌ Database connection failed:', error.message);
-    console.error('Please check your .env file and ensure MySQL is running and your password is correct.');
   }
 }
 
