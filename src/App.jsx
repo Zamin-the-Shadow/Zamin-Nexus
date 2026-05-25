@@ -143,7 +143,7 @@ function Auth({ onLogin }) {
     const payload = isSignup ? { name, email, password } : { email, password };
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -410,7 +410,7 @@ function RecommendedInvestors({ setActiveNav, user }) {
   const [investors, setInvestors] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/investors')
+    fetch('/api/investors')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -500,7 +500,7 @@ function Dashboard({ setActiveNav, user }) {
   const [stats, setStats] = useState(STATS);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/stats')
+    fetch('/api/stats')
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {
@@ -681,7 +681,7 @@ function FindInvestors({ user }) {
     const fetchInvestors = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/api/investors?q=${encodeURIComponent(searchQuery)}`);
+        const response = await fetch(`/api/investors?q=${encodeURIComponent(searchQuery)}`);
         const data = await response.json();
         
         if (Array.isArray(data)) {
@@ -869,7 +869,7 @@ function Messages({ user }) {
 
   // Fetch conversations
   useEffect(() => {
-    fetch('http://localhost:5000/api/conversations')
+    fetch('/api/conversations')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
@@ -890,7 +890,7 @@ function Messages({ user }) {
   useEffect(() => {
     if (!activeChat) return;
     setChatLoading(true);
-    fetch(`http://localhost:5000/api/messages/${activeChat}`)
+    fetch(`/api/messages/${activeChat}`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setChatMessages(data);
@@ -915,7 +915,7 @@ function Messages({ user }) {
     setChatMessages(prev => [...prev, optimistic]);
     setNewMessage('');
     try {
-      await fetch('http://localhost:5000/api/messages', {
+      await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ conversation_id: activeChat, sender: user?.name || 'You', text: newMessage, isMe: true }),
@@ -1161,7 +1161,7 @@ function Notifications() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/notifications')
+    fetch('/api/notifications')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
@@ -1180,7 +1180,7 @@ function Notifications() {
 
   const markAllRead = async () => {
     try {
-      await fetch('http://localhost:5000/api/notifications/mark-read', { method: 'POST' });
+      await fetch('/api/notifications/mark-read', { method: 'POST' });
       setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
     } catch {}
   };
@@ -1300,7 +1300,7 @@ function Documents() {
   const [uploadMsg, setUploadMsg] = useState('');
 
   const fetchDocs = () => {
-    fetch('http://localhost:5000/api/documents')
+    fetch('/api/documents')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
@@ -1322,7 +1322,7 @@ function Documents() {
   const handleDelete = async (id) => {
     if (!confirm('Delete this document?')) return;
     try {
-      await fetch(`http://localhost:5000/api/documents/${id}`, { method: 'DELETE' });
+      await fetch(`/api/documents/${id}`, { method: 'DELETE' });
       setDocuments(prev => prev.filter(d => d.id !== id));
     } catch {}
   };
@@ -1341,7 +1341,7 @@ function Documents() {
       formData.append('document', file);
       
       try {
-        const res = await fetch('http://localhost:5000/api/documents/upload', {
+        const res = await fetch('/api/documents/upload', {
           method: 'POST',
           body: formData
         });
@@ -1456,7 +1456,7 @@ function Settings({ user, onUpdateProfile }) {
     setSaving(true);
     setMessage('');
     try {
-      const response = await fetch('http://localhost:5000/api/profile/update', {
+      const response = await fetch('/api/profile/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1820,7 +1820,7 @@ function Meetings({ user }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/meetings')
+    fetch('/api/meetings')
       .then(res => res.json())
       .then(data => {
         setMeetings(data);
@@ -1870,7 +1870,7 @@ function Payments({ user }) {
   const [transactions, setTransactions] = useState([]);
   
   useEffect(() => {
-    fetch('http://localhost:5000/api/payments/transactions?userId=' + (user?.id || 1))
+    fetch('/api/payments/transactions?userId=' + (user?.id || 1))
       .then(res => res.json())
       .then(data => setTransactions(data));
   }, [user]);
