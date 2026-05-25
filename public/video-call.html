@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Video Call</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .call-header {
+      padding: 16px 24px;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+    .video-grid {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 24px;
+    }
+    video {
+      background: #000;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .controls {
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      background: linear-gradient(to top, #0f172a, transparent);
+    }
+    .btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: #334155;
+      color: white;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #475569; }
+    .btn.end { background: #ef4444; }
+    .btn.end:hover { background: #dc2626; }
+    .btn.muted { background: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="call-header">
+    <h2>Nexus Secure Meeting Chamber</h2>
+    <span id="room-status">Connecting to Room...</span>
+  </div>
+
+  <div class="video-grid" id="video-grid">
+    <!-- Videos will be injected here -->
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="mute-btn">🎤</button>
+    <button class="btn" id="video-btn">📹</button>
+    <button class="btn end" id="end-btn" onclick="window.close()">❌</button>
+  </div>
+
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="/video-call.js"></script>
+</body>
+</html>
