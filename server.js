@@ -50,6 +50,7 @@ async function initDb() {
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
+      port: process.env.DB_PORT || 3306,
     });
 
     await initialConnection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'nexus_platform'}\`;`);
@@ -61,6 +62,7 @@ async function initDb() {
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'nexus_platform',
+      port: process.env.DB_PORT || 3306,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0
@@ -297,7 +299,16 @@ initDb();
 // -------------------------------------------------------------
 
 app.get('/', (req, res) => {
-  res.send('<h1>Nexus Platform API</h1><p>The backend is running. Please access the website via the Vite dev server (usually http://localhost:5173).</p>');
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+// Serve static frontend files
+const distPath = path.join(__dirname, 'dist');
+app.use(express.static(distPath));
+
+// Fallback to React index.html for non-API routes
+app.get(/^(?!\/api).+/, (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.get('/api/health', (req, res) => {
